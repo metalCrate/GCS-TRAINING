@@ -1,5 +1,5 @@
 import json
-from utils import config
+from src.utils import config
 
 with open(config['colors_map_path'], 'r') as f:
     color_map = json.load(f)

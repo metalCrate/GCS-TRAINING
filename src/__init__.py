@@ -1,3 +1,5 @@
-from utils import config
-from passive_drill import run_passive_drill
-from colors import graphene_map, background_color
+from src.utils import config
+from src.colors import graphene_map, background_color
+
+from src.passive_drill import run_passive_drill
+from src.early_dmts import run_early_dmts

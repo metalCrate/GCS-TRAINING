@@ -1,9 +1,8 @@
 import pygame
-from sqlalchemy import case
 import yaml
-from utils import config
-from colors import graphene_map, background_color
-from pygame_utils import print_multiline
+from src.utils import config
+from src.colors import graphene_map, background_color
+from src.pygame_utils import print_multiline
 from enum import Enum
 import random
 
@@ -22,15 +21,15 @@ class PASSIVE_DRILL_STATE(Enum):
     BACKGROUND = 2
     END = 3
 
-def start_screen(screen: pygame.Surface, font: pygame.font.Font, events: list[pygame.event.Event], estimated_time: int):
+def start_screen(screen: pygame.Surface, font: pygame.font.Font, events: list[pygame.event.Event], estimated_time: float):
     screen.fill(background_color)
     _text = [
         ""
         "Passive Drill",
         "",
-        "\"Participants were instructed to watch the letters carefully,",
-        "and to try to memorize the presented letter-color associations\"",
-        "",
+        "You are to watch the letters carefully,",
+        "and try to memorize the presented letter-color associations",
+        "", 
         f"Estimated time: {estimated_time // 60}m {estimated_time % 60:.0f}s",
         "",
         "Press any key to start"
@@ -43,7 +42,7 @@ def start_screen(screen: pygame.Surface, font: pygame.font.Font, events: list[py
             if(event.type == pygame.KEYDOWN):
                 run_state = PASSIVE_DRILL_STATE.STIMULUS
 
-    return run_state
+    return run_state 
 
 def run_passive_drill():
     run_state = PASSIVE_DRILL_STATE.START
