@@ -15,7 +15,8 @@ This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed
 | Task | Status | Description |
 | :--- | :--- | :--- |
 | **Passive Drill** | Done | Letters with associated colors are shown for passive memorization. 
-| **Delayed Match-to-Sample** | WIP | A target graphene-color pairing is shown, then must be selected after a dekay. 
+| **Early Delayed Match-to-Sample** | WIP | A target graphene-color pairing is shown, then must be selected after a delay.
+| **Late Delayed Match-to-Sample** | WIP |  Same as above, except initial graphene is shown in black.
 
 ## Getting Started
 
