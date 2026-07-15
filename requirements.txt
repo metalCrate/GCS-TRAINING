@@ -1,1 +1,3 @@
-pygame == 2.6.1
+# Tested and written in those versions, may work in others but not guaranteed
+pygame >= 2.6.1
+pandas >= 2.3.3
