@@ -78,7 +78,7 @@ class TaskSelectionPage(tk.Frame):
         self.join_date_label.pack(pady=5)
         self.week_label = tk.Label(self, text="")
         self.week_label.pack(pady=5)
-        tasks = [("Passive Drill", "passive_drill"), ("Early Delayed Match to Sample", "early_dmts")]
+        tasks = [("Passive Drill", "passive_drill"), ("Early Delayed Match to Sample", "early_dmts"), ("Late Delayed Match to Sample", "late_dmts")]
 
         for label, task_name in tasks:
             btn = tk.Button(
@@ -151,7 +151,10 @@ class MainApp(tk.Tk):
             run_passive_drill()
         elif self.task_to_run == "early_dmts":
             from src import run_early_dmts
-            run_early_dmts()
+            run_early_dmts(self.participant_id)
+        elif self.task_to_run == "late_dmts": 
+            from src import run_late_dmts
+            run_late_dmts(self.participant_id)
         else:
             messagebox.showerror("Error", f"Unknown task: {self.task_to_run}")
 

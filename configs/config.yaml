@@ -15,7 +15,10 @@ early-dmts:
   stimulus_duration : 1.5 # 1.5s
   delay_duration : 3 # 3s
   response_duration : 4 # 4s
-  initial_fake_similarity : 0.5 # original unknown 0.5
+  feedback_duration : 1 # # original unknown, 1s
+  initial_fake_similarity : 0.5 # original unknown, 0.5
   success_delta_similarity : 0.2 # 0.2
   failure_delta_similarity : -0.2 # -0.2
-  total_trials : 30 # 30
+  total_trials : 3 # 30
+
+# for late-dmts the parameters are the same

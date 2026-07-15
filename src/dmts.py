@@ -6,7 +6,10 @@ from src.colors import graphene_map, background_color
 from src.pygame_utils import print_multiline, color_by_similarity
 from enum import Enum
 import random
-
+import os
+import json
+import time
+import pandas as pd
 def adjust_similarity(current, delta):
     if delta > 0:
         return current + (1-current) * delta
@@ -39,7 +42,10 @@ class DMTS_STATE(Enum):
     END = 5
 
 class DMTSRunner:
-    def __init__(self):
+    def __init__(self, user_id, mode :str = 'early'):
+        self.user_id = user_id
+        self.mode = mode
+        
         self.run_state = DMTS_STATE.START
         self.timer = 0
         self.trial_counter = 0
@@ -52,15 +58,17 @@ class DMTSRunner:
         self.screen : pygame.Surface = None
         self.font1 : pygame.font.Font = None
         self.graphenes = list(graphene_map.keys())
+        self.color_graphenes = True if self.mode == 'early' else False
+        self.has_finished = False
 
     def start_screen(self, events):
         self.screen.fill(background_color)
         _text = [
             ""
-            "Early Delayed Match to Sample",
+            "Early Delayed Match to Sample" if self.mode == 'early' else "Late Delayed Match to Sample",
             "",
-            "You will be shown letters in their corresponding colors.",
-            "After a delay, you will be asked to select the correct color from 2 options.",
+            "You will be shown letters in their corresponding colors." if self.color_graphenes else "You will be shown letters in black.",
+            "After a delay, you will be asked to select the correct color from 2 options." if self.color_graphenes else "After a delay, you will be asked to select the corresponding color from 2 options.",
             "With each successful trial, the task will become more difficult.",
             "With each failed trial, the task will become easier.",
             "",
@@ -96,7 +104,7 @@ class DMTSRunner:
     def stimulus_screen(self):
         self.screen.fill(background_color)
 
-        color = graphene_map[self.target_graphene]
+        color = graphene_map[self.target_graphene] if self.color_graphenes else (0, 0, 0)
         color = pygame.Color(color)
         text = self.font2.render(self.target_graphene, True, color)
         self.screen.blit(text, (self.middle_position[0] - text.get_width() // 2, self.middle_position[1] - text.get_height() // 2))
@@ -171,46 +179,132 @@ class DMTSRunner:
         for event in events:
             if(event.type == pygame.KEYDOWN):
                 pygame.quit()
-                return
+                return True
+            
+        return False
 
     def generate_summary(self):
-            average_correct_time = 0
-            accuracy = 0
-            for result in self.results:
-                if result['correct']:
-                    average_correct_time += result['time_to_response']
-                    accuracy += 1
+        self.has_finished = True
+        average_correct_time = 0
+        accuracy = 0
+        for result in self.results:
+            if result['correct']:
+                average_correct_time += result['time_to_response']
+                accuracy += 1
 
-            average_correct_time /= accuracy if accuracy > 0 else -1
-            accuracy = accuracy / len(self.results) if len(self.results) > 0 else -1
+        average_correct_time /= accuracy if accuracy > 0 else -1
+        accuracy = accuracy / len(self.results) if len(self.results) > 0 else -1
 
-            best_letter = None
-            worst_letter = None
+        best_letter = None
+        worst_letter = None
 
-            letter_avg_sim = {}
+        letter_avg_sim = {}
 
-            for result in self.results:
-                letter = result['target_graphene']
-                if letter not in letter_avg_sim:
-                    letter_avg_sim[letter] = []
-                letter_avg_sim[letter].append(result['similarity'])
-            
-            letter_avg_sim = {letter: sum(sim_list) / len(sim_list) for letter, sim_list in letter_avg_sim.items()}
+        for result in self.results:
+            letter = result['target_graphene']
+            if letter not in letter_avg_sim:
+                letter_avg_sim[letter] = []
+            letter_avg_sim[letter].append(result['similarity'])
+        
+        letter_avg_sim = {letter: sum(sim_list) / len(sim_list) for letter, sim_list in letter_avg_sim.items()}
 
-            best_letter = max(letter_avg_sim, key=letter_avg_sim.get)
-            worst_letter = min(letter_avg_sim, key=letter_avg_sim.get)
+        best_letter = max(letter_avg_sim, key=letter_avg_sim.get)
+        worst_letter = min(letter_avg_sim, key=letter_avg_sim.get)
 
-            average_difficulty = sum(self.similarity_dict.values()) / len(self.similarity_dict) if len(self.similarity_dict) > 0 else -1
-            
-            self.summary = [
-                f"Average time to correct response: {average_correct_time:.2f}s",
-                f"Accuracy: {accuracy * 100:.2f}%",
-                f"Final average difficulty (similarity): {average_difficulty:.2f}",
-                f"Best letter: {best_letter} (avg similarity: {letter_avg_sim[best_letter]:.2f})",
-                f"Worst letter: {worst_letter} (avg similarity: {letter_avg_sim[worst_letter]:.2f})"
-            ]
+        average_difficulty = sum(self.similarity_dict.values()) / len(self.similarity_dict) if len(self.similarity_dict) > 0 else -1
+        
+        self.summary = [
+            f"Average time to correct response: {average_correct_time:.2f}s",
+            f"Accuracy: {accuracy * 100:.2f}%",
+            f"Final average difficulty (similarity): {average_difficulty:.2f}",
+            f"Best letter: {best_letter} (avg similarity: {letter_avg_sim[best_letter]:.2f})",
+            f"Worst letter: {worst_letter} (avg similarity: {letter_avg_sim[worst_letter]:.2f})"
+        ]
 
-            # SAVE average_difficulty for the next run
+        # SAVE average_difficulty for the next run
+
+    def load_user_settings(self):
+        user_root = f'data/users/{self.user_id}/'
+        task_folder = f'{self.mode}-dmts'
+        task_directory = os.path.join(user_root, task_folder)
+ 
+           
+        if(not os.path.exists(task_directory)):
+            os.makedirs(task_directory, exist_ok=True) # Create path if doesnt exist
+        
+        
+        settings_directory = os.path.join(task_directory, 'settings.json')    
+
+        if(not os.path.isfile(settings_directory)):
+            # Create default settings file
+            default_settings = {'start_similarity': initial_fake_similarity}
+            with open(settings_directory, 'w') as f:
+                json.dump(default_settings, f)
+
+        with open(settings_directory, 'r') as f:
+            settings = json.load(f)
+        
+        start_similarity = settings.get('start_similarity', initial_fake_similarity)
+        for graphene in self.similarity_dict.keys():
+            self.similarity_dict[graphene] = start_similarity
+
+    def save_user_settings(self):
+        user_root = f'data/users/{self.user_id}/'
+        task_folder = f'{self.mode}-dmts'
+        task_directory = os.path.join(user_root, task_folder)
+        
+        settings_directory = os.path.join(task_directory, 'settings.json')
+
+        average_difficulty = sum(self.similarity_dict.values()) / len(self.similarity_dict) if len(self.similarity_dict) > 0 else initial_fake_similarity
+        settings = {'start_similarity': average_difficulty}
+        with open(settings_directory, 'w') as f:
+            json.dump(settings, f)
+
+        return
+    
+    def log_user_results(self):
+        
+        final_average_difficulty = (
+            sum(self.similarity_dict.values()) / len(self.similarity_dict)
+            if len(self.similarity_dict) > 0 
+            else initial_fake_similarity
+        )
+        
+        average_time_to_respond = (t := [r['time_to_response'] for r in self.results if r['response'] is not None]) and sum(t)/len(t) or None
+        average_time_to_correct_response = (t := [r['time_to_response'] for r in self.results if r['correct']]) and sum(t)/len(t) or None
+        accuracy = (t := [r['correct'] for r in self.results]) and sum(t)/len(t) or None
+        response_percent = (t := [r['response'] for r in self.results]) and sum(1 for x in t if x is not None)/len(t) or None
+        time_of_finish = time.strftime("%Y-%m-%d %H:%M:%S")
+        
+        new_row = {
+            'user_id': self.user_id,
+            'session_number': 1,
+            'mode': self.mode,
+            'final_average_difficulty': final_average_difficulty,
+            'average_time_to_respond': average_time_to_respond,
+            'average_time_to_correct_response': average_time_to_correct_response,
+            'accuracy': accuracy,
+            'response_percent': response_percent,
+            'time_of_finish': time_of_finish
+        }
+        
+        user_root = f'data/users/{self.user_id}/'
+        task_folder = f'{self.mode}-dmts'
+        task_directory = os.path.join(user_root, task_folder)
+        
+        csv_path = os.path.join(task_directory, 'results.csv')
+
+        if(os.path.isfile(csv_path)):
+            df = pd.read_csv(csv_path)
+            new_row['session_number'] = df['session_number'].max() + 1
+            new_df = pd.DataFrame([new_row])
+            df = pd.concat([df, new_df], ignore_index=True)
+        else:
+            df = pd.DataFrame([new_row])
+
+        df.to_csv(csv_path, index=False)
+
+
 
     def run(self):
         pygame.init()
@@ -234,6 +328,9 @@ class DMTSRunner:
         self.square_right_rect = pygame.Rect(right_middle[0] - half_square_size, right_middle[1] - half_square_size, square_size, square_size)
 
         self.similarity_dict = {graphene: initial_fake_similarity for graphene in graphene_map.keys()}
+
+        self.load_user_settings()
+
         while True:
             clock.tick(60)  # Limit the frame rate to 60 FPS
             events = pygame.event.get()
@@ -258,8 +355,9 @@ class DMTSRunner:
                 case DMTS_STATE.FEEDBACK:
                     self.feedback_screen()
                 case DMTS_STATE.END:
-                    self.end_screen(events)
-
+                    has_quit = self.end_screen(events)
+                    if(has_quit):
+                        return
             # Update the display
             pygame.display.flip()
 
@@ -274,8 +372,14 @@ def evaluate_response(is_left_correct: bool, events: list[pygame.event.Event], t
 
 def run_early_dmts(user_id=None):
 
-    runner = DMTSRunner()
+    runner = DMTSRunner(user_id, mode='early')
     runner.run()
-
+    runner.save_user_settings()
+    runner.log_user_results()
+def run_late_dmts(user_id=None):
+    runner = DMTSRunner(user_id, mode='late')
+    runner.run()
+    runner.save_user_settings()
+    runner.log_user_results()
 if __name__ == "__main__":
     run_early_dmts()

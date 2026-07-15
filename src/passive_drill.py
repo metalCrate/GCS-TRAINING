@@ -94,7 +94,9 @@ class PassiveDrillRunner:
         for event in events:
             if(event.type == pygame.KEYDOWN):
                 pygame.quit()
-                return
+                return True
+            
+        return False
     
     def run(self):
         pygame.init()
@@ -123,7 +125,9 @@ class PassiveDrillRunner:
                 case PASSIVE_DRILL_STATE.BACKGROUND:
                     self.background_screen()
                 case PASSIVE_DRILL_STATE.END:
-                    self.end_screen(events)
+                    has_quit = self.end_screen(events)
+                    if(has_quit):
+                        return
             pygame.display.flip()
 
 class PASSIVE_DRILL_STATE(Enum):
