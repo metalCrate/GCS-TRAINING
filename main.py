@@ -1,21 +1,18 @@
 import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkfont
-import csv
 from tkinter import messagebox 
-
+import pandas as pd
+import time
 users_list_path = 'data/users.csv'
 uids_list = []
 
-with open(users_list_path, 'r') as f:
-    reader = csv.reader(f)
-    for i, row in enumerate(reader):
-        if(i == 0):  # Skip header
-            continue
+df = pd.read_csv(users_list_path, dtype={'user_id': str, 'user_name': str, 'join_date': str})
+uids_list = df['user_id'].tolist()
+user_names = df['user_name'].tolist()
+#print(uids_list)
+#print(user_names)
 
-        uids_list.append(row[0])
-
-print(uids_list)
 class LoginPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -46,6 +43,8 @@ class LoginPage(tk.Frame):
             return
         
         self.controller.participant_id = uid
+        self.controller_participant_name = df.loc[df['user_id'] == uid, 'user_name'].values[0] if uid in uids_list else "Unknown"
+        self.controller.participant_name = self.controller_participant_name
         self.controller.show_frame(TaskSelectionPage)
 
     def on_input_change(self, *args):
@@ -71,9 +70,14 @@ class TaskSelectionPage(tk.Frame):
 
         tk.Label(self, text="Task selection", font=default_font).pack(pady=10)
 
-        self.user_label = tk.Label(self, text="")
-        self.user_label.pack(pady=5)
-
+        self.user_id_label = tk.Label(self, text="")
+        self.user_id_label.pack(pady=5)
+        self.user_name_label = tk.Label(self, text="")
+        self.user_name_label.pack(pady=5)
+        self.join_date_label = tk.Label(self, text="")
+        self.join_date_label.pack(pady=5)
+        self.week_label = tk.Label(self, text="")
+        self.week_label.pack(pady=5)
         tasks = [("Passive Drill", "passive_drill"), ("Early Delayed Match to Sample", "early_dmts")]
 
         for label, task_name in tasks:
@@ -91,7 +95,15 @@ class TaskSelectionPage(tk.Frame):
         ).pack(pady=10)
 
     def on_show(self):
-        self.user_label.config(text=f"Participant ID: {self.controller.participant_id}")
+        self.user_id_label.config(text=f"Participant ID: {self.controller.participant_id}")
+        self.user_name_label.config(text=f"Participant Name: {self.controller.participant_name}")
+        join_date = df.loc[df['user_id'] == self.controller.participant_id, 'join_date'].values[0]
+        self.join_date_label.config(text=f"Join Date: {join_date}")
+        days_elapsed = (pd.Timestamp.now() - pd.to_datetime(join_date)).days
+        week_number = (days_elapsed // 7) + 1
+        self.week_label.config(text=f"Week Number: {week_number}")
+
+
 
     def start_task(self, task_name):
         self.controller.task_to_run = task_name
