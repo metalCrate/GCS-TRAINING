@@ -5,7 +5,7 @@
 
 A lightweight, **minimal-dependency** implementation of the cognitive training paradigm from **Bor et al. (2014)**, which demonstrated that adults can be trained to acquire synesthetic experiences.
 
-This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed Match-to-Sample, and Span tasks) using only **Python** and **Pygame**, making it easy to run, modify, and distribute without installing heavy toolkits like PsychoPy or MATLAB.
+This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed Match-to-Sample, and Span tasks) using only **Python**, **Pygame** and **Pandas**, making it easy to run, modify, and distribute without installing heavy toolkits like PsychoPy or MATLAB.
 
 ## Reference
 > Bor, D., Rothen, N., Schwartzman, D. J., Clayton, S., & Seth, A. K. (2014). *Adults Can Be Trained to Acquire Synesthetic Experiences.* Scientific Reports, 4, 7089.  
@@ -32,6 +32,7 @@ This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed
 2. Installing dependancies
    ```
    pip install pygame
+   pip install pandas
 3. To run
     ```
     python main.py
