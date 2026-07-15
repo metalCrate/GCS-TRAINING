@@ -15,8 +15,9 @@ This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed
 | Task | Status | Description |
 | :--- | :--- | :--- |
 | **Passive Drill** | Done | Letters with associated colors are shown for passive memorization. 
-| **Early Delayed Match-to-Sample** | WIP | A target graphene-color pairing is shown, then must be selected after a delay.
-| **Late Delayed Match-to-Sample** | WIP |  Same as above, except initial graphene is shown in black.
+| **Early Delayed Match-to-Sample** | Done | A target graphene-color pairing is shown, then must be selected after a delay.
+| **Late Delayed Match-to-Sample** | Done |  Same as above, except initial graphene is shown in black.
+| **Eearly Span** | WIP | A sequence of colored letters is shown. Then must be reproduced by pressing coloured squares in the right order.
 
 ## Getting Started
 
