@@ -1,5 +1,4 @@
 import pygame
-from sqlalchemy import case
 import yaml
 from src.utils import config
 from src.colors import graphene_map, background_color
@@ -10,6 +9,7 @@ import os
 import json
 import time
 import pandas as pd
+
 def adjust_similarity(current, delta):
     if delta > 0:
         return current + (1-current) * delta
@@ -219,6 +219,8 @@ class DMTSRunner:
             f"Final average difficulty (similarity): {average_difficulty:.2f}",
             f"Best letter: {best_letter} (avg similarity: {letter_avg_sim[best_letter]:.2f})",
             f"Worst letter: {worst_letter} (avg similarity: {letter_avg_sim[worst_letter]:.2f})"
+            "",
+            "Press any key to exit."
         ]
 
         # SAVE average_difficulty for the next run
@@ -357,6 +359,7 @@ class DMTSRunner:
                 case DMTS_STATE.END:
                     has_quit = self.end_screen(events)
                     if(has_quit):
+                        pygame.quit()
                         return
             # Update the display
             pygame.display.flip()
@@ -371,7 +374,6 @@ def evaluate_response(is_left_correct: bool, events: list[pygame.event.Event], t
     return None
 
 def run_early_dmts(user_id=None):
-
     runner = DMTSRunner(user_id, mode='early')
     runner.run()
     runner.save_user_settings()

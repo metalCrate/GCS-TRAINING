@@ -1,4 +1,4 @@
-colors_map_path: "data/graphene_maps/my_map.json"
+colors_map_path: "data/graphene_maps/paper_map.json"
 
 screen:
   width: 1280
@@ -19,6 +19,14 @@ early-dmts:
   initial_fake_similarity : 0.5 # original unknown, 0.5
   success_delta_similarity : 0.2 # 0.2
   failure_delta_similarity : -0.2 # -0.2
-  total_trials : 3 # 30
+  total_trials : 30 # 30
+
+span:
+  initial_sequence_length : 6 # original unknown, 6
+  stimulus_duration : 0.5 # 500ms
+  gap_duration : 0.25 # 250ms
+  response_delay : 0.5 # 500ms
+  total_trials : 30 # 30
+
 
 # for late-dmts the parameters are the same

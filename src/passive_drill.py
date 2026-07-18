@@ -127,6 +127,7 @@ class PassiveDrillRunner:
                 case PASSIVE_DRILL_STATE.END:
                     has_quit = self.end_screen(events)
                     if(has_quit):
+                        pygame.quit()
                         return
             pygame.display.flip()
 
