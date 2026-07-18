@@ -18,8 +18,8 @@ This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed
 | **Early Delayed Match-to-Sample** | Done | A target graphene-color pairing is shown, then must be selected after a delay.
 | **Late Delayed Match-to-Sample** | Done |  Same as above, except initial graphene is shown in black.
 | **Early Span** | Done | A sequence of colored letters is shown. Then must be reproduced by pressing coloured squares in the right order.
-| **Late Span** | Done | Same as Early Span, except the sequence was presented with colored squares, and the users were to select colored letters.
-| **Advanced Span** | Done | Same as Late span, except black letters were used.
+| **Late Span** | Done | Same as Early Span, except the sequence is presented with colored squares, and the users are to select colored letters.
+| **Advanced Span** | Done | Same as Late span, except the letters are black.
 
 ## Getting Started
 
