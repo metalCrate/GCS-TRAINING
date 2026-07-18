@@ -17,7 +17,9 @@ This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed
 | **Passive Drill** | Done | Letters with associated colors are shown for passive memorization. 
 | **Early Delayed Match-to-Sample** | Done | A target graphene-color pairing is shown, then must be selected after a delay.
 | **Late Delayed Match-to-Sample** | Done |  Same as above, except initial graphene is shown in black.
-| **Eearly Span** | WIP | A sequence of colored letters is shown. Then must be reproduced by pressing coloured squares in the right order.
+| **Early Span** | Done | A sequence of colored letters is shown. Then must be reproduced by pressing coloured squares in the right order.
+| **Late Span** | Done | Same as Early Span, except the sequence was presented with colored squares, and the users were to select colored letters.
+| **Advanced Span** | Done | Same as Late span, except black letters were used.
 
 ## Getting Started
 
@@ -39,14 +41,10 @@ This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed
     python main.py
     ```
 ## Roadmap
-* EDMTS Implementation
-* LDMTS Implementation
-* Early Span Implementation
-* Late Span Implementation
 * Letters-Colors Speed Test Implementation
 * Colors-Lettersd Speed Test Implementation
-* Advanced Span Implementation
 * N-Back Implementation
 * Backward Span Implementation
 * Spelling task Implementation
 * Automatic Logging of results
+* Automatic queueing of tasks according to schedule
