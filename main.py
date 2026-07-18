@@ -78,7 +78,12 @@ class TaskSelectionPage(tk.Frame):
         self.join_date_label.pack(pady=5)
         self.week_label = tk.Label(self, text="")
         self.week_label.pack(pady=5)
-        tasks = [("Passive Drill", "passive_drill"), ("Early Delayed Match to Sample", "early_dmts"), ("Late Delayed Match to Sample", "late_dmts")]
+        tasks = [
+            ("Passive Drill", "passive_drill"),
+            ("Early Delayed Match to Sample", "early_dmts"),
+            ("Late Delayed Match to Sample", "late_dmts"),
+            ("Early Span", "early_span"),
+            ]
 
         for label, task_name in tasks:
             btn = tk.Button(
@@ -144,19 +149,24 @@ class MainApp(tk.Tk):
             frame.on_show()
         
         frame.tkraise()
-
+ 
     def run_task(self):
-        if self.task_to_run == "passive_drill":
-            from src import run_passive_drill
-            run_passive_drill()
-        elif self.task_to_run == "early_dmts":
-            from src import run_early_dmts
-            run_early_dmts(self.participant_id)
-        elif self.task_to_run == "late_dmts": 
-            from src import run_late_dmts
-            run_late_dmts(self.participant_id)
-        else:
-            messagebox.showerror("Error", f"Unknown task: {self.task_to_run}")
+
+        match self.task_to_run:
+            case "passive_drill":
+                from src import run_passive_drill
+                run_passive_drill()
+            case "early_dmts":
+                from src import run_early_dmts
+                run_early_dmts(self.participant_id)
+            case "late_dmts": 
+                from src import run_late_dmts
+                run_late_dmts(self.participant_id)
+            case "early_span":
+                from src import run_early_span
+                run_early_span(self.participant_id)
+            case _:
+                messagebox.showerror("Error", f"Unknown task: {self.task_to_run}")
 
 default_font = None
 if __name__ == "__main__":
