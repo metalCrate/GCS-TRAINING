@@ -83,6 +83,8 @@ class TaskSelectionPage(tk.Frame):
             ("Early Delayed Match to Sample", "early_dmts"),
             ("Late Delayed Match to Sample", "late_dmts"),
             ("Early Span", "early_span"),
+            ("Late Span", "late_span"),
+            ("Advanced Span", "advanced_span")
             ]
 
         for label, task_name in tasks:
@@ -165,6 +167,12 @@ class MainApp(tk.Tk):
             case "early_span":
                 from src import run_early_span
                 run_early_span(self.participant_id)
+            case "late_span":
+                from src import run_late_span
+                run_late_span(self.participant_id)
+            case "advanced_span":
+                from src import run_advanced_span
+                run_advanced_span(self.participant_id)
             case _:
                 messagebox.showerror("Error", f"Unknown task: {self.task_to_run}")
 

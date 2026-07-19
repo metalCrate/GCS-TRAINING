@@ -415,9 +415,23 @@ class SpanRunner:
 
         return
         
-        
-def run_early_span(user_id):
-    runner = SpanRunner(user_id, mode="early")
+
+def run_span(user_id, mode="early"):
+    runner = SpanRunner(user_id, mode=mode)
     runner.run()
     runner.save_user_settings()
     runner.log_user_results()
+
+
+def run_early_span(user_id):
+    run_span(user_id, mode="early")
+
+def run_late_span(user_id):
+    run_span(user_id, mode="late")
+
+def run_advanced_span(user_id):
+    run_span(user_id, mode="advanced")
+
+def run_backward_span(user_id):
+    return # Not implemented yet
+    run_span(user_id, mode="backward")
