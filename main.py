@@ -84,7 +84,9 @@ class TaskSelectionPage(tk.Frame):
             ("Late Delayed Match to Sample", "late_dmts"),
             ("Early Span", "early_span"),
             ("Late Span", "late_span"),
-            ("Advanced Span", "advanced_span")
+            ("Advanced Span", "advanced_span"),
+            ("Color to Letter Speed Test", "color-to-letter"),
+            ("Letter to Color Speed Test", "letter-to-color")
             ]
 
         for label, task_name in tasks:
@@ -173,6 +175,12 @@ class MainApp(tk.Tk):
             case "advanced_span":
                 from src import run_advanced_span
                 run_advanced_span(self.participant_id)
+            case "color-to-letter":
+                from src import run_color_to_letter
+                run_color_to_letter(self.participant_id)
+            case "letter-to-color":
+                from src import run_letter_to_color
+                run_letter_to_color(self.participant_id)
             case _:
                 messagebox.showerror("Error", f"Unknown task: {self.task_to_run}")
 

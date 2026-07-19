@@ -28,5 +28,10 @@ span:
   response_delay : 0.5 # 500ms
   total_trials : 30 # 30
 
+speed_test:
+  gap_duration : 0.25 # 250ms
+  show_feedback : false # originally - false
+  total_trials : 3 # 100
+
 
 # for late-dmts the parameters are the same

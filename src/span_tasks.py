@@ -11,6 +11,7 @@ import time
 import pandas as pd
 from typing import Literal
 import numpy as np
+
 span_config = config['span']
 
 stimulus_duration = span_config['stimulus_duration']
@@ -28,7 +29,8 @@ class SPAN_STATE(Enum):
     RESPONSE = 5
     FEEDBACK = 6
     END = 7
-
+    
+# Move to a shared file, since this is used in both span_tasks.py and speed_test_tasks.py
 class StimulusType(Enum):
     COLOR = 1
     LETTER = 2
@@ -360,10 +362,16 @@ class SpanRunner:
         task_directory = os.path.join(user_root, task_folder)
 
         settings_directory = os.path.join(task_directory, 'settings.json')
-
-        avg_final_sequence_length = np.mean([result['sequence_length'] for result in self.results])
-        avg_final_sequence_length = np.clip(avg_final_sequence_length, 1, len(self.graphene_map))
-        avg_final_sequence_length = int(round(avg_final_sequence_length))
+        
+        # Sometimes the value is NaN, need to check the issue root
+        try:
+            avg_final_sequence_length = np.mean([result['sequence_length'] for result in self.results]) 
+            avg_final_sequence_length = np.clip(avg_final_sequence_length, 1, len(self.graphene_map))
+            avg_final_sequence_length = int(round(avg_final_sequence_length))
+        except Exception as e:
+            print(f"Error converting avg_final_sequence_length to int: {e}")
+            avg_final_sequence_length = initial_sequence_length  # fallback to initial value
+        
         user_settings = {
             "initial_sequence_length": avg_final_sequence_length
         }
