@@ -1,8 +1,7 @@
 import pygame
-import yaml
 from src.utils import config
 from src.colors import graphene_map, background_color
-from src.pygame_utils import print_multiline, color_by_similarity
+from src.pygame_utils import print_multiline
 from enum import Enum
 import random
 import os
