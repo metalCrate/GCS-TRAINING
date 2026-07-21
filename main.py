@@ -10,15 +10,13 @@ uids_list = []
 df = pd.read_csv(users_list_path, dtype={'user_id': str, 'user_name': str, 'join_date': str})
 uids_list = df['user_id'].tolist()
 user_names = df['user_name'].tolist()
-#print(uids_list)
-#print(user_names)
 
 class LoginPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-
-        tk.Label(self, text="Welcome to GCS Trainer", font=default_font).pack(pady=10)
+        self.default_font = tkfont.nametofont("TkDefaultFont")
+        tk.Label(self, text="Welcome to GCS Trainer", font=self.default_font).pack(pady=10)
         tk.Label(self, text="Participant ID:").pack(pady=(20,5))
 
         self.user_var = tk.StringVar()
@@ -68,7 +66,8 @@ class TaskSelectionPage(tk.Frame):
         super().__init__(parent)
         self.controller = controller
 
-        tk.Label(self, text="Task selection", font=default_font).pack(pady=10)
+        self.default_font = tkfont.nametofont("TkDefaultFont")
+        tk.Label(self, text="Task selection", font=self.default_font).pack(pady=10)
 
         self.user_id_label = tk.Label(self, text="")
         self.user_id_label.pack(pady=5)
@@ -86,7 +85,8 @@ class TaskSelectionPage(tk.Frame):
             ("Late Span", "late_span"),
             ("Advanced Span", "advanced_span"),
             ("Color to Letter Speed Test", "color-to-letter"),
-            ("Letter to Color Speed Test", "letter-to-color")
+            ("Letter to Color Speed Test", "letter-to-color"),
+            ("N-Back", "nback")
             ]
 
         for label, task_name in tasks:
@@ -106,7 +106,7 @@ class TaskSelectionPage(tk.Frame):
     def on_show(self):
         self.user_id_label.config(text=f"Participant ID: {self.controller.participant_id}")
         self.user_name_label.config(text=f"Participant Name: {self.controller.participant_name}")
-        join_date = df.loc[df['user_id'] == self.controller.participant_id, 'join_date'].values[0]
+        join_date = df.loc[df['user_id'] == self.controller.participant_id, 'join_date'].values[0] # type: ignore
         self.join_date_label.config(text=f"Join Date: {join_date}")
         days_elapsed = (pd.Timestamp.now() - pd.to_datetime(join_date)).days
         week_number = (days_elapsed // 7) + 1
@@ -124,7 +124,7 @@ class TaskSelectionPage(tk.Frame):
 
 class MainApp(tk.Tk):
     def __init__(self):
-        super().__init__(screenName="GCS-Trainer", baseName=None, className='Tk', useTk=1)
+        super().__init__(screenName="GCS-Trainer", baseName=None, className='Tk', useTk=True)
         self.title("GCS Trainer")
         self.geometry("400x500")
         self.participant_id = None
@@ -181,10 +181,12 @@ class MainApp(tk.Tk):
             case "letter-to-color":
                 from src import run_letter_to_color
                 run_letter_to_color(self.participant_id)
+            case "nback":
+                from src import run_nback
+                run_nback(self.participant_id)
             case _:
                 messagebox.showerror("Error", f"Unknown task: {self.task_to_run}")
 
-default_font = None
 if __name__ == "__main__":
     app = MainApp()
     app.mainloop()

@@ -424,7 +424,7 @@ class SpanRunner:
         
 
 def run_span(user_id, mode="early"):
-    runner = SpanRunner(user_id, mode=mode)
+    runner = SpanRunner(user_id, mode=mode) # type: ignore
     runner.run()
     runner.save_user_settings()
     runner.log_user_results()

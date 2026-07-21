@@ -22,6 +22,7 @@ This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed
 | **Advanced Span** | Done | Same as Early span, except the letters are black.
 | **Letter To Color Speed Test** | Done | A black letter is shown - corresponding colored square has to be selected. 
 | **Letter To Color Speed Test** | Done | A colored square is shown - corresponding black letter has to be selected.
+| **Synesthesia N Back** | Done | A series of stimuli (colors or graphemes) is shown. If n'th back stimuli matches current input must be given.
 
 ## Getting Started
 
@@ -43,8 +44,6 @@ This project re-creates the key behavioral tasks (Passive Drill, N-back, Delayed
     python main.py
     ```
 ## Roadmap
-* N-Back Implementation
 * Backward Span Implementation
 * Spelling task Implementation
-* Automatic Logging of results
 * Automatic queueing of tasks according to schedule
